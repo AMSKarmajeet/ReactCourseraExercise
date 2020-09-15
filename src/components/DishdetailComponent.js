@@ -1,63 +1,71 @@
-import React, { Component } from "react";
-import { Card, CardBody, CardImg, CardTitle, CardText } from "reactstrap";
+import React from 'react';
+import { Card, CardImg, CardBody, CardText, CardTitle } from 'reactstrap';
 
-class DishDetail extends Component {
 
-    constructor(props) {
-        super(props);
+
+
+  function ConvertDateToCommentDateFormat({timestamp}) {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function RenderDish({dish}) {
+    return (
+      <Card>
+        <CardImg top src={dish.image} alt={dish.name} />
+        <CardBody>
+          <CardTitle>{dish.name}</CardTitle>
+          <CardText>{dish.description}</CardText>
+        </CardBody>
+      </Card>
+    );
+  }
+
+  function RenderComments({comments}) {
+    if (comments == null || comments.length === 0) {
+      return (
+        <div></div>
+      );
     }
 
-    getFormattedDate(date) {
-        var date1 = new Date(date);
-        var month = new Array();
-        month[0] = "Jan";
-        month[1] = "Feb";
-        month[2] = "Mar";
-        month[3] = "Apr";
-        month[4] = "May";
-        month[5] = "Jun";
-        month[6] = "Jul";
-        month[7] = "Aug";
-        month[8] = "Sep";
-        month[9] = "Oct";
-        month[10] = "Nov";
-        month[11] = "Dec";
-        return `${month[date1.getMonth()]} ${date1.getDay()},${date1.getFullYear()}`;
+    const renderedComments = comments.map((comment) => {
+      return (
+        <li>
+          <p>{comment.comment}</p>
+          <p>-- {comment.author}, {ConvertDateToCommentDateFormat(comment.date)}</p>
+        </li>
+      );
+    });
+
+    return (
+      <div>
+        <h4>Comments</h4>
+        <ul className="list-unstyled">
+          { renderedComments }
+        </ul>
+      </div>
+    );
+  }
+
+  const DishDetail = (props) => {
+    if (props.dish != null) {
+      return (
+        <div className="row">
+          <div className="col-12 col-md-5 m-1">
+            <RenderDish dish={props.dish} />
+          </div>
+          <div className="col-12 col-md-5 m-1">
+            <RenderComments comments={props.dish.comments} />
+          </div>
+        </div>
+      );
     }
-
-    renderComments(comment) {
-        return (
-            <div key={comment.id} className="li">
-                <CardBody>
-                    <CardText>{comment.comment}</CardText>
-                    <CardText>-- {comment.author + " " + this.getFormattedDate(comment.date)}</CardText>
-                </CardBody>
-            </div>)
+    else {
+      return (
+        <div></div>
+      );
     }
-
-    render() {
-
-        const comments = this.props.selectedDish.comments.map((comment) => this.renderComments(comment));
-        return (
-            <div className="row">
-                <Card className="col-12 col-md-5">
-                    <CardImg width="100%" src={this.props.selectedDish.image} alt={this.props.selectedDish.name} />
-                    <CardBody>
-                        <CardTitle>{this.props.selectedDish.name}</CardTitle>
-                        <CardText>{this.props.selectedDish.description}</CardText>
-                    </CardBody>
-                </Card>
-                <Card className="col-12 col-md-5">
-                    <CardBody>
-                        <CardTitle>Comments</CardTitle>
-                        {comments}
-                    </CardBody>
-                </Card>
-            </div>
-        );
-    }
-
-}
+  }
 
 
-export default DishDetail
+export default DishDetail;
