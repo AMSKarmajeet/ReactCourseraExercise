@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-
-
 import Menu from "./MenuComponent";
 import DishDetail from "./DishdetailComponent";
 import Header from "./HeaderComponent";
@@ -25,7 +23,6 @@ const mapStateToProps = state => {
 class Main extends Component {
   constructor(props) {
     super(props);
-
   }
 
   onDishSelect(dishId) {
